@@ -1,0 +1,46 @@
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE VS 
+
+	@id_virtual_skill_key int = 0,
+	@id_skill_key int = 0,
+	@tx_virtual_skill_name varchar(255) = null,
+	@tx_virtual_skill_desc varchar(255) = null,
+	@choice varchar(100)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+   if @choice = 'insert'
+   begin 
+       insert into T_VIRTUAL_SKILL(tx_virtual_skill_name,tx_virtual_skill_desc) Values (@tx_virtual_skill_name, @tx_virtual_skill_desc);
+   end
+
+   if @choice = 'update'
+   begin 
+       update T_VIRTUAL_SKILL set
+	   tx_virtual_skill_name = @tx_virtual_skill_name, tx_virtual_skill_desc = @tx_virtual_skill_desc where id_virtual_skill_key = @id_virtual_skill_key;
+   end
+
+   if @choice = 'delete'
+   begin 
+       Delete From T_VIRTUAL_SKILL where id_virtual_skill_key = @id_virtual_skill_key
+   end
+
+
+END
+GO
+
+EXEC VS @id_virtual_skill_key = 1 , @tx_virtual_skill_name = 'spring boot',@tx_virtual_skill_desc = '',@choice ='update';
+select * from T_VIRTUAL_SKILL;
+EXEC VS @id_virtual_skill_key = 6 , @tx_virtual_skill_name = 'spring boottt',@tx_virtual_skill_desc = 'desc',@choice ='insert';
+Drop proc VS;
+delete from T_VIRTUAL_SKILL where tx_virtual_skill_name = '';
