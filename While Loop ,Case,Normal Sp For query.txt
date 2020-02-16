@@ -1,0 +1,42 @@
+DROP TABLE IF EXISTS #TMP1
+SELECT dtt_mod	= CAST(dtt_mod AS DATE)
+, ct_DHAKA = CASE WHEN tx_region = 'DHAKA'	THEN 1 END
+, ct_CUMILLA = CASE WHEN tx_region = 'CUMILLA'	THEN 1 END
+INTO #TMP1
+FROM T_ATM
+
+GROUP BY tx_region, dtt_mod
+ORDER BY CAST(dtt_mod AS DATE)
+
+SELECT
+ SUM(ct_DHAKA) AS 'DHAKA'
+, SUM(ct_CUMILLA) AS 'CUMILLA'
+FROM #TMP1
+
+select  DISTINCT(tx_operation), count(tx_operation) from T_ATM_TXN group by tx_operation
+
+DECLARE @Counter INT 
+SET @Counter=1
+WHILE ( @Counter <= (select COUNT(tx_operation) from T_ATM_TXN ))
+BEGIN
+    PRINT 'The counter value is = ' + CONVERT(VARCHAR,@Counter)
+    SET @Counter  = @Counter  + 1
+END
+
+
+DROP PROCEDURE tx_operation_all;
+create proc tx_operation_all  
+    @choice varchar(100)
+AS	
+BEGIN
+	SET NOCOUNT ON;
+
+   if @choice = 'tx_operation_all'
+   begin 
+       select DISTINCT tx_operation from T_ATM_TXN
+   end
+
+   END
+GO
+
+EXECUTE tx_operation_all  @choice = 'tx_operation_all';
